@@ -66,11 +66,11 @@ def main():
         print(f"Run {run+1:2d}: {elapsed:.4f} s")
 
     times = np.array(times)
-    print("\n--- Povzetek časa ---")
-    print(f"Povprečni čas: {times.mean():.4f} s")
+    print("\n--- Povzetek casa ---")
+    print(f"Povprecni cas: {times.mean():.4f} s")
     print(f"Standardni odklon: {times.std():.4f} s")
-    print(f"Minimalni čas: {times.min():.4f} s")
-    print(f"Maximalni čas: {times.max():.4f} s")
+    print(f"Minimalni cas: {times.min():.4f} s")
+    print(f"Maximalni cas: {times.max():.4f} s")
 
 if __name__ == "__main__":
     main()
