@@ -1,11 +1,16 @@
-program,run_number,elapsed_time_s,nprocs
-WebScraperSerial.py,1,3.5635,1
-WebScraperSerial.py,2,2.0895,1
-WebScraperSerial.py,3,4.8005,1
-WebScraperSerial.py,4,3.4262,1
-WebScraperSerial.py,5,1.7727,1
-WebScraperSerial.py,6,1.6342,1
-WebScraperSerial.py,7,2.9053,1
-WebScraperSerial.py,8,3.8605,1
-WebScraperSerial.py,9,5.8487,1
-WebScraperSerial.py,10,5.2022,1
+Run 1: 2.6546 s
+Run 2: 3.5825 s
+Run 3: 3.3060 s
+Run 4: 2.3598 s
+Run 5: 7.5290 s
+Run 6: 7.6314 s
+Run 7: 5.2709 s
+Run 8: 3.9749 s
+Run 9: 4.5172 s
+Run 10: 4.2234 s
+
+—— Povzetek časa ——
+Povprečni čas: 4.5050 s
+Standardni odklon: 1.7372 s
+Minimalni čas: 2.3598 s
+Maksimalni čas: 7.6314 s

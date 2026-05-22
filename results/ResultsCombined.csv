@@ -1,0 +1,14 @@
+Implementacija,Procesi,Povp. čas [s],Std,Pospešek
+serial,1,4.5050,1.7372,1.00
+numba,1,2.4273,1.5843,1.85
+paralel1,1,2.3657,1.2073,1.90
+paralel2,2,1.8911,1.3428,2.38
+paralel4,4,1.4800,0.6804,3.04
+paralel8,8,2.8159,1.5229,1.60
+
+
+Implementacija,Procesi,Povp. čas [s],Pospešek,Karp-Flatt
+paralel1,1,2.3657,1.00,0.00
+paralel2,2,1.8911,1.25,0.20
+paralel4,4,1.4800,1.60,0.40
+paralel8,8,2.8159,0.84,0.37
