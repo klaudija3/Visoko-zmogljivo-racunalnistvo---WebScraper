@@ -34,7 +34,7 @@ python WebSerialNumba.py urls.txt fakulteta
 
 ---
 
-## Opis meritev
+## Zahteve
 
 Za vsako implementacijo je potrebno:
 
@@ -198,5 +198,5 @@ Relativno velik standardni odklon kaže, da so meritve precej odvisne od zunanji
    * Večje e(p) → omrežni latency, neenakomerna razdelitev, serijski del
 4. **Praktičen nasvet:** več jeder ni vedno bolje; vedno preveri S(p) in e(p) za optimalno konfiguracijo.
 5. **Varianca časov** pri serijski izvedbi je visoka, kar nakazuje vpliv latence spletnih strani.
-6. * Za stabilnejše meritve bi lahko uporabili več URL-jev (50–100).
+6. **Za stabilnejše meritve** bi lahko uporabili več URL-jev (50–100).
 
