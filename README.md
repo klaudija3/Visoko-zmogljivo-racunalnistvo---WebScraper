@@ -46,6 +46,46 @@ S tem pristopom lahko ocenimo **pospešek** posamezne izvedbe in vpliv paraleliz
 
 ---
 
+## Delovanje programov
+
+
+# Serijska izvedba
+
+Serijska verzija programa zaporedno obdela naključno izbranih 5 URL-naslovov iz datoteke `urls.txt`. Za vsak URL se izvede HTTP-zahteva z uporabo knjižnice `requests`. Če je stran uspešno dosegljiva, program preveri, ali se podana ključna beseda nahaja v vsebini strani.
+
+Merjenje časa se izvede 10-krat. Pri vsakem zagonu se izbere nov naključni vzorec petih URL-jev. Na koncu program izpiše povprečni čas izvajanja, standardni odklon ter minimalni in maksimalni čas.
+
+Ta izvedba predstavlja osnovno referenco za primerjavo z ostalimi pristopi.
+
+# Paralelna izvedba z MPI
+
+Paralelna verzija uporablja knjižnico `mpi4py`, ki omogoča izvajanje programa na več procesih. Program se zažene z ukazom `mpiexec -n N`, kjer `N` določa število procesov oziroma jeder.
+
+Proces z rangom 0 (master) prebere seznam URL-naslovov iz datoteke in ga nato pošlje vsem ostalim procesom z metodo `bcast`. Pri vsakem izmed 10 meritev se naključno izbere 5 URL-jev, nato se ti razdelijo med procese. Vsak proces obdela svoj del URL-naslovov in preveri prisotnost ključne besede.
+
+Čas izvajanja se meri od začetka do konca obdelave, pri čemer se uporabi največji čas med vsemi procesi, saj skupni čas paralelnega programa določa najpočasnejši proces. Na koncu proces 0 izpiše statistiko časov izvajanja.
+
+Ta pristop omogoča primerjavo hitrosti pri različnem številu procesov, na primer pri `-n 1`, `-n 2`, `-n 4` in `-n 8`.
+
+# Serijska izvedba z Numba
+
+Tretja izvedba je prav tako serijska, vendar za iskanje ključne besede uporablja knjižnico Numba. Funkcija `contains_keyword` je označena z dekoratorjem `@njit`, kar pomeni, da jo Numba prevede v hitrejšo strojno kodo.
+
+Namesto preverjanja niza z izrazom:
+
+```python
+keyword.lower() in resp.text.lower()
+```
+
+Program vsebino strani pretvori v bajtno obliko, nato pa s pomočjo Numba funkcije ročno preveri, ali se zaporedje bajtov ključne besede pojavi v vsebini spletne strani.
+
+Pred meritvami se izvede še funkcija `warm_up`, ki poskrbi, da se Numba funkcija prevede pred začetkom merjenja časa. Tako čas prve kompilacije ni vključen v rezultate.
+
+Ta izvedba je namenjena preverjanju, ali lahko optimizacija samega iskanja ključne besede izboljša čas izvajanja. Ker pa je pri spletnem strganju največji del časa običajno porabljen za čakanje na HTTP-odzive, je pričakovana pohitritev z Numbo omejena.
+
+
+---
+
 ## Pospešek in Karp-Flatt
 
 * **Pospešek S(p):**
