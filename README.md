@@ -49,7 +49,7 @@ S tem pristopom lahko ocenimo **pospešek** posamezne izvedbe in vpliv paraleliz
 ## Delovanje programov
 
 
-# Serijska izvedba
+### Serijska izvedba
 
 Serijska verzija programa zaporedno obdela naključno izbranih 5 URL-naslovov iz datoteke `urls.txt`. Za vsak URL se izvede HTTP-zahteva z uporabo knjižnice `requests`. Če je stran uspešno dosegljiva, program preveri, ali se podana ključna beseda nahaja v vsebini strani.
 
@@ -57,7 +57,7 @@ Merjenje časa se izvede 10-krat. Pri vsakem zagonu se izbere nov naključni vzo
 
 Ta izvedba predstavlja osnovno referenco za primerjavo z ostalimi pristopi.
 
-# Paralelna izvedba z MPI
+### Paralelna izvedba z MPI
 
 Paralelna verzija uporablja knjižnico `mpi4py`, ki omogoča izvajanje programa na več procesih. Program se zažene z ukazom `mpiexec -n N`, kjer `N` določa število procesov oziroma jeder.
 
@@ -67,7 +67,7 @@ Proces z rangom 0 (master) prebere seznam URL-naslovov iz datoteke in ga nato po
 
 Ta pristop omogoča primerjavo hitrosti pri različnem številu procesov, na primer pri `-n 1`, `-n 2`, `-n 4` in `-n 8`.
 
-# Serijska izvedba z Numba
+### Serijska izvedba z Numba
 
 Tretja izvedba je prav tako serijska, vendar za iskanje ključne besede uporablja knjižnico Numba. Funkcija `contains_keyword` je označena z dekoratorjem `@njit`, kar pomeni, da jo Numba prevede v hitrejšo strojno kodo.
 
