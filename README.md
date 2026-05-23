@@ -51,9 +51,9 @@ S tem pristopom lahko ocenimo **pospešek** posamezne izvedbe in vpliv paraleliz
 
 ### Serijska izvedba
 
-Serijska verzija programa zaporedno obdela naključno izbranih 5 URL-naslovov iz datoteke `urls.txt`. Za vsak URL se izvede HTTP-zahteva z uporabo knjižnice `requests`. Če je stran uspešno dosegljiva, program preveri, ali se podana ključna beseda nahaja v vsebini strani.
+Serijska verzija programa zaporedno obdela naključno izbranih 20 URL-naslovov iz datoteke `urls.txt`. Za vsak URL se izvede HTTP-zahteva z uporabo knjižnice `requests`. Če je stran uspešno dosegljiva, program preveri, ali se podana ključna beseda nahaja v vsebini strani.
 
-Merjenje časa se izvede 10-krat. Pri vsakem zagonu se izbere nov naključni vzorec petih URL-jev. Na koncu program izpiše povprečni čas izvajanja, standardni odklon ter minimalni in maksimalni čas.
+Merjenje časa se izvede 10-krat. Pri vsakem zagonu se izbere nov naključni vzorec dvajsetih URL-jev. Na koncu program izpiše povprečni čas izvajanja, standardni odklon ter minimalni in maksimalni čas.
 
 Ta izvedba predstavlja osnovno referenco za primerjavo z ostalimi pristopi.
 
@@ -61,7 +61,7 @@ Ta izvedba predstavlja osnovno referenco za primerjavo z ostalimi pristopi.
 
 Paralelna verzija uporablja knjižnico `mpi4py`, ki omogoča izvajanje programa na več procesih. Program se zažene z ukazom `mpiexec -n N`, kjer `N` določa število procesov oziroma jeder.
 
-Proces z rangom 0 (master) prebere seznam URL-naslovov iz datoteke in ga nato pošlje vsem ostalim procesom z metodo `bcast`. Pri vsakem izmed 10 meritev se naključno izbere 5 URL-jev, nato se ti razdelijo med procese. Vsak proces obdela svoj del URL-naslovov in preveri prisotnost ključne besede.
+Proces z rangom 0 (master) prebere seznam URL-naslovov iz datoteke in ga nato pošlje vsem ostalim procesom z metodo `bcast`. Pri vsakem izmed 10 meritev se naključno izbere 20 URL-jev, nato se ti razdelijo med procese. Vsak proces obdela svoj del URL-naslovov in preveri prisotnost ključne besede.
 
 Čas izvajanja se meri od začetka do konca obdelave, pri čemer se uporabi največji čas med vsemi procesi, saj skupni čas paralelnega programa določa najpočasnejši proces. Na koncu proces 0 izpiše statistiko časov izvajanja.
 
@@ -115,14 +115,14 @@ $$
 
 ## 1. Povzetek testiranih izvedb
 
-| Implementacija | Procesi | Povp. čas [s] | Std    | Pospešek |
-| -------------- | ------- | ------------- | ------ | -------- |
-| serial         | 1       | 4.5050        | 1.7372 | 1.00     |
-| numba          | 1       | 2.4273        | 1.5843 | 1.85     |
-| paralel1       | 1       | 2.3657        | 1.2073 | 1.90     |
-| paralel2       | 2       | 1.8911        | 1.3428 | 2.38     |
-| paralel4       | 4       | 1.4800        | 0.6804 | 3.04     |
-| paralel8       | 8       | 2.8159        | 1.5229 | 1.60     |
+| Implementacija | Procesi | Povp. čas [s]  | Std     | Pospešek |
+| -------------- | ------- | -------------- | ------- | -------- |
+| serial         | 1       | 14.2590        | 8.9933  | 1.00     |
+| numba          | 1       | 11.3565        | 6.6439  | 1.26     |
+| paralel1       | 1       | 16.5844        | 10.3556 | 0.86     |
+| paralel2       | 2       | 8.2527         | 5.1485  | 1.73     |
+| paralel4       | 4       | 5.8881         | 5.6904  | 2.42     |
+| paralel8       | 8       | 6.7651         | 6.7697  | 2.11     |
 
 Pospešek je izračunan glede na osnovno serijsko izvedbo. Vrednost 1 pomeni enako hitro izvajanje kot serijska verzija, vrednost večja od 1 pa pomeni hitrejše izvajanje.
 
@@ -132,9 +132,9 @@ $S = \frac{T_{serial}}{T_{izvedba}}$
 
 **Interpretacija:**
 
-* **Pospešek 1.85 (Numba)** pomeni, da je izvajanje Numba verzije skoraj dvakrat hitrejše od serijske izvedbe.
-* **Paralel4 pospešek 3.04** pomeni, da paralelna izvedba s 4 jedri deluje 3× hitreje od serijske.
-* **Paralel8 pospešek 1.60** je nižji kot pri paralel4, kar nakazuje, da več jeder ne pomeni vedno večjega pospeška zaradi overheada MPI komunikacije.
+* **Pospešek 1.26 (Numba)** pomeni, da je izvajanje Numba verzije hitrejše od serijske izvedbe.
+* **Paralel4 pospešek 2.42** pomeni, da paralelna izvedba s 4 jedri deluje 2.4× hitreje od serijske.
+* **Paralel8 pospešek 2.11** je nižji kot pri paralel4, kar nakazuje, da več jeder ne pomeni vedno večjega pospeška zaradi overheada MPI komunikacije.
 
 ---
 
@@ -146,31 +146,31 @@ $S = \frac{T_{serial}}{T_{izvedba}}$
 
 Opazimo:
 
-* **Serial**: največja razpršenost časov, od 2.35 s do 7.63 s
-* **Numba**: nižji in bolj stabilni časi
+* **Serial**: največja razpršenost časov
+* **Numba**: bolj stabilni časi
 * **Paralelni programi**: nižji časi, najbolj optimalni pri paralel4. Pri paralel8 se časi povečajo zaradi komunikacijskega overheada.
 
 ---
 
 ## 3. Povprečni časi
 ![Povprečni časi izvajanja](photos/image2.png)
-* **Najhitrejša izvedba:** paralel4 (1.48 s)
-* **Serijska:** 4.505 s
-* **Numba:** 2.427 s, skoraj polovico hitreje
-* **Paralel8:** 2.815 s, višja kot paralel4, kar kaže na omejitve skaliranja
+* **Najhitrejša izvedba:** paralel4
+* **Serijska:** visoka
+* **Numba:** hitreje kot serijska
+* **Paralel8:** višja kot paralel4, kar kaže na omejitve skaliranja
 
-Če primerjamo povprečne čase vseh izvedb, je **najhitrejša izvedba paralel4** s povprečjem 1.48 s. Serijska izvedba je najpočasnejša (4.505 s), Numba zmanjša čas skoraj za polovico (2.427 s), medtem ko paralel8 (2.815 s) ne doseže optimala zaradi komunikacijskega overheada.
+Če primerjamo povprečne čase vseh izvedb, je **najhitrejša izvedba paralel4**. Paralel1 izvedba je najpočasnejša, Numba zmanjša čas, medtem ko paralel8 ne doseže optimala zaradi komunikacijskega overheada.
 
 Pri paralel2 dobiš učinkovitost nad 1, kar lahko pomeni t. i. superlinearni pospešek, ampak pri spletnih zahtevah je bolj verjetno, da je to posledica nihanja omrežja, cache-a, razpoložljivosti strežnikov ali različnih odzivnih časov.
 
 
-Pri 4 procesih je učinkovitost približno 0.76, kar pomeni, da se procesi še dokaj dobro izkoriščajo. Pri 8 procesih učinkovitost pade na približno 0.20, zato dodatni procesi ne prispevajo več sorazmerno k pospešku.
+Pri 4 procesih je učinkovitost boljša, kar pomeni, da se procesi še dokaj dobro izkoriščajo. Pri 8 procesih učinkovitost pade, zato dodatni procesi ne prispevajo več sorazmerno k pospešku.
 
 **Odstotek izboljšave časa:**
 
-* Numba zmanjša povprečni čas izvajanja za približno 46 %.
-* Največje izboljšanje doseže paralelna izvedba s 4 procesi, kjer se čas zmanjša za približno 67 %.
-* Pri 8 procesih se izboljšava zmanjša na približno 38 %, kar kaže na slabše skaliranje pri večjem številu procesov.
+* Numba zmanjša povprečni čas izvajanja za približno 20 %.
+* Največje izboljšanje doseže paralelna izvedba s 4 procesi, kjer se čas zmanjša za približno polovico.
+* Pri 8 procesih kaže na slabše skaliranje pri večjem številu procesov.
 
 ---
 
@@ -182,18 +182,18 @@ Pri 4 procesih je učinkovitost približno 0.76, kar pomeni, da se procesi še d
 
 **Interpretacija Karp-Flatt:**
 
-* **0.20 pri paralel2:** 20% serijski delež ali komunikacijski overhead
-* **0.40 pri paralel4:** najbolj optimalno razmerje med paralelizacijo in overheadom
-* **0.37 pri paralel8:** zmanjšana učinkovitost zaradi komunikacije, serijskega dela in neenakomerne razdelitve dela
+* **0.0 pri paralel2:** 0% serijski delež ali komunikacijski overhead
+* **0.14 pri paralel4:** najbolj optimalno razmerje med paralelizacijo in overheadom
+* **0.32 pri paralel8:** zmanjšana učinkovitost zaradi komunikacije, serijskega dela in neenakomerne razdelitve dela
 Karp-Flattova metrika pri enem procesu ni definirana, zato je v tabeli označena z `-`.
 
 Pomembno: pri Karp-Flatt velja, da je **manjša vrednost boljša**.
 
 Torej:
 
-* `paralel2`: Karp-Flatt = **0.20** → boljše skaliranje
-* `paralel4`: Karp-Flatt = **0.40** → več overheada/serijskega vpliva kot pri 2 procesih
-* `paralel8`: Karp-Flatt = **0.37** → še vedno precejšen overhead
+* `paralel2`: Karp-Flatt = **0.00** → boljše skaliranje
+* `paralel4`: Karp-Flatt = **0.14** → več overheada/serijskega vpliva kot pri 2 procesih
+* `paralel8`: Karp-Flatt = **0.32** → še vedno precejšen overhead
 
 Za `paralel1` Karp-Flatt **ni definiran**, ker formula vsebuje deljenje z:
 
@@ -209,7 +209,7 @@ $$
 * **Povprečni čas ± standardni odklon**: zmanjšuje se do paralel4, nato raste pri paralel8
 * **Praktični pospešek S(p)**: največji pri paralel4, pokazatelj optimalnega števila jeder
 * **Idealni linearni pospešek**: linearno narašča, a praktični S(p) ne sledi idealu pri višjem številu jeder
-* **Standardni odklon**: najnižji pri paralel4, kar kaže na stabilnost izvajanja
+* **Standardni odklon**: najnižji pri paralel2, kar kaže na stabilnost izvajanja
 
 Čeprav bi pričakovali, da bo 8 procesov hitrejših od 4, se je v meritvah pokazalo nasprotno. Razlog je najverjetneje v komunikacijskem overheadu MPI, neenakomerni razdelitvi URL-jev med procese in predvsem v nestabilnosti HTTP zahtev. Spletni pajek ni samo CPU-bound problem, ampak je močno odvisen od omrežne latence in odzivnosti posameznih strežnikov.
 
@@ -221,9 +221,9 @@ Standardni odklon je pri nekaterih izvedbah velik. To pomeni, da meritve niso ze
 Na primer:
 
 ```text
-serial std = 1.7372 s pri povprečju 4.5050 s
-numba std = 1.5843 s pri povprečju 2.4273 s
-paralel2 std = 1.3428 s pri povprečju 1.8911 s
+serial std = 8.9933 s pri povprečju 14.2590 s
+numba std = 6.6439 s pri povprečju 11.3565 s
+paralel2 std = 5.1485 s pri povprečju 8.2527 s
 ```
 
 Relativno velik standardni odklon kaže, da so meritve precej odvisne od zunanjih dejavnikov, predvsem od odzivnosti spletnih strani. Zato posamezna meritev ni dovolj zanesljiva, bolj smiselno je primerjati povprečja več ponovitev.
@@ -231,12 +231,12 @@ Relativno velik standardni odklon kaže, da so meritve precej odvisne od zunanji
 
 ## 7. Zaključek
 
-1. **Numba** skoraj dvakrat zmanjša serijski čas (S ≈ 1.85).
-2. **Optimalni MPI pospešek** je pri 4 jedrih (S ≈ 3.04), pri 8 pa se učinkovitost zmanjša (S ≈ 1.60).
+1. **Numba** skoraj zmanjša serijski čas za 20%.
+2. **Optimalni MPI pospešek** je pri 4 jedrih, pri 8 pa se učinkovitost zmanjša.
 3. **Karp-Flattova metrika** jasno kaže, kje se začnejo komunikacijski stroški in serijski delež:
    * Majhno e(p) → dobra paralelizacija
    * Večje e(p) → omrežni latency, neenakomerna razdelitev, serijski del
 4. **Praktičen nasvet:** več jeder ni vedno bolje; vedno preveri S(p) in e(p) za optimalno konfiguracijo.
-5. **Varianca časov** pri serijski izvedbi je visoka, kar nakazuje vpliv latence spletnih strani.
-6. **Za stabilnejše meritve** bi lahko uporabili več URL-jev (50–100).
+5. **Varianca časov** pri serijski izvedbi je visoka, kar n akazuje vpliv latence spletnih strani.
+6. **Za stabilnejše meritve** smo uporabili 100 URL-jev.
 
