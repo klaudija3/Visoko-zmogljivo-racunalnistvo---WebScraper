@@ -1,4 +1,4 @@
-# serial, 10x naključnih 5 url testov.
+# serial, 10x naključnih 20 url testov.
 
 import sys
 import time
@@ -30,7 +30,7 @@ def main():
     times = []
 
     for run in range(n_runs):
-        sample_urls = random.sample(urls, 5)
+        sample_urls = random.sample(urls, 20)
         start = time.perf_counter()
         for url in sample_urls:
             check_url(url, keyword)

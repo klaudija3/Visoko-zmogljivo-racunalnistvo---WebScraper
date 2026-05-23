@@ -29,7 +29,7 @@ def main():
     rank = comm.Get_rank()
     size = comm.Get_size()  # število workerjev določi mpiexec -n
     n_runs = 10
-    sample_size = 5
+    sample_size = 20
 
     urls_file = sys.argv[1] if len(sys.argv) > 1 else "urls.txt"
     keyword = sys.argv[2] if len(sys.argv) > 2 else "fakulteta"
