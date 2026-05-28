@@ -86,6 +86,68 @@ Ta izvedba je namenjena preverjanju, ali lahko optimizacija samega iskanja klju�
 
 ---
 
+## Algoritemska shema paralelne MPI izvedbe
+
+Paralelna izvedba uporablja model **master-worker**. Proces z rangom `0` ima vlogo glavnega procesa, ostali procesi pa izvajajo obdelavo dodeljenega dela URL-naslovov.
+
+### Vloge procesov
+
+| Proces | Vloga | Naloge |
+|---|---|---|
+| `rank 0` | Master | Prebere datoteko `urls.txt`, izbere naključni vzorec URL-jev, razpošlje podatke ostalim procesom, zbere meritve in izpiše statistiko |
+| `rank > 0` | Worker | Prejme podatke, obdela svoj del URL-jev, izmeri lokalni čas in sodeluje pri redukciji časa |
+| vsi procesi | Izvajalci | Vsak proces obdela podmnožico URL-jev in preveri prisotnost ključne besede |
+
+### Komunikacija med procesi
+
+| Korak | MPI operacija | Opis |
+|---|---|---|
+| 1 | `MPI_Bcast` | Proces `rank 0` pošlje seznam URL-jev oziroma izbran vzorec vsem procesom |
+| 2 | lokalna delitev dela | Vsak proces izračuna, kateri URL-ji mu pripadajo glede na `rank` in skupno število procesov |
+| 3 | lokalna obdelava | Vsak proces neodvisno izvede HTTP-zahteve za svoj del URL-jev |
+| 4 | `MPI_Reduce` z `MPI.MAX` | Izmeri se največji čas med procesi, ker skupni čas paralelne izvedbe določa najpočasnejši proces |
+| 5 | `rank 0` izpis | Glavni proces izračuna povprečje, standardni odklon, minimum, maksimum in pospešek |
+
+### Shema algoritma
+
+```mermaid
+flowchart TD
+    A[Začetek programa] --> B{rank == 0?}
+
+    B -->|Da| C[Preberi urls.txt]
+    B -->|Ne| D[Čakaj na podatke]
+
+    C --> E[MPI_Bcast: pošlji URL-je vsem procesom]
+    D --> E
+
+    E --> F[Začni meritev]
+
+    F --> G{rank == 0?}
+    G -->|Da| H[Izberi naključnih 20 URL-jev]
+    G -->|Ne| I[Čakaj na vzorec URL-jev]
+
+    H --> J[MPI_Bcast: pošlji izbrane URL-je]
+    I --> J
+
+    J --> K[Razdeli URL-je med procese]
+    K --> L[Vsak proces obdela svoj del URL-jev]
+    L --> M[HTTP zahteva + iskanje ključne besede]
+    M --> N[Izmeri lokalni čas]
+
+    N --> O[MPI_Reduce: max lokalnega časa]
+    O --> P{rank == 0?}
+
+    P -->|Da| Q[Shrani čas meritve]
+    P -->|Ne| R[Konec iteracije]
+
+    Q --> S{10 ponovitev?}
+    R --> S
+
+    S -->|Ne| F
+    S -->|Da| T[rank 0 izračuna statistiko]
+    T --> U[Izpis rezultatov]
+---
+
 ## Pospešek in Karp-Flatt
 
 * **Pospešek S(p):**
