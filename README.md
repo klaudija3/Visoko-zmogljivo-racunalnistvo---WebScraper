@@ -146,6 +146,8 @@ flowchart TD
     S -->|Ne| F
     S -->|Da| T[rank 0 izračuna statistiko]
     T --> U[Izpis rezultatov]
+
+```
 ---
 
 ## Pospešek in Karp-Flatt
