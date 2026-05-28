@@ -117,12 +117,12 @@ $$
 
 | Implementacija | Procesi | Povp. čas [s]  | Std     | Pospešek |
 | -------------- | ------- | -------------- | ------- | -------- |
-| serial         | 1       | 14.2590        | 8.9933  | 1.00     |
-| numba          | 1       | 11.3565        | 6.6439  | 1.26     |
-| paralel1       | 1       | 16.5844        | 10.3556 | 0.86     |
-| paralel2       | 2       | 8.2527         | 5.1485  | 1.73     |
-| paralel4       | 4       | 5.8881         | 5.6904  | 2.42     |
-| paralel8       | 8       | 6.7651         | 6.7697  | 2.11     |
+| serial         | 1       | 14.259         | 8.993  | 1.00     |
+| numba          | 1       | 11.357         | 6.644  | 1.26     |
+| paralel1       | 1       | 16.584         | 10.356 | 0.86     |
+| paralel2       | 2       | 8.253          | 5.149  | 1.73     |
+| paralel4       | 4       | 5.888          | 5.690  | 2.42     |
+| paralel8       | 8       | 6.765          | 6.770  | 2.11     |
 
 Pospešek je izračunan glede na osnovno serijsko izvedbo. Vrednost 1 pomeni enako hitro izvajanje kot serijska verzija, vrednost večja od 1 pa pomeni hitrejše izvajanje.
 
@@ -178,7 +178,25 @@ Pri 4 procesih je učinkovitost boljša, kar pomeni, da se procesi še dokaj dob
 
 **Celotne meritve:**
 
-![Rezultati izvedbe](photos/image3.png)
+## Rezultati izvedb
+
+| Implementacija | Procesi | Povp. čas [s] | Std     | Pospešek |
+|---|---:|---:|---:|---:|
+| serial   | 1 | 14.259  | 8.993  | 1.0  |
+| numba    | 1 | 11.357  | 6.644  | 1.26 |
+| paralel1 | 1 | 16.584  | 10.356 | 0.86 |
+| paralel2 | 2 | 8.253   | 5.149  | 1.73 |
+| paralel4 | 4 | 5.888   | 5.690  | 2.42 |
+| paralel8 | 8 | 6.765   | 6.770  | 2.11 |
+
+## Karp-Flatt
+
+| Implementacija | Procesi | Povp. čas [s] | Pospešek | Karp-Flatt |
+|---|---:|---:|---:|---:|
+| paralel1 | 1 | 16.584 | 1.0  | 0.0    |
+| paralel2 | 2 | 8.253  | 2.01 | 0.0    |
+| paralel4 | 4 | 5.888  | 2.82 | 0.140  |
+| paralel8 | 8 | 6.765  | 2.45 | 0.323  |
 
 **Interpretacija Karp-Flatt:**
 
@@ -221,9 +239,9 @@ Standardni odklon je pri nekaterih izvedbah velik. To pomeni, da meritve niso ze
 Na primer:
 
 ```text
-serial std = 8.9933 s pri povprečju 14.2590 s
-numba std = 6.6439 s pri povprečju 11.3565 s
-paralel2 std = 5.1485 s pri povprečju 8.2527 s
+serial std = 8.993 s pri povprečju 14.260 s
+numba std = 6.644 s pri povprečju 11.357 s
+paralel2 std = 5.149 s pri povprečju 8.253 s
 ```
 
 Relativno velik standardni odklon kaže, da so meritve precej odvisne od zunanjih dejavnikov, predvsem od odzivnosti spletnih strani. Zato posamezna meritev ni dovolj zanesljiva, bolj smiselno je primerjati povprečja več ponovitev.
